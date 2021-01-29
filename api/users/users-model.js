@@ -3,7 +3,12 @@ const db = require('../../data/dbConfig.js')
 module.exports = {
   insert,
   remove,
+  getAll
 }
+
+function getAll() {
+    return db('users')
+  }
 
 async function insert(hobbit) {
   const [id] = await db('users')
@@ -22,4 +27,10 @@ async function remove(id) {
       .where('id', id)
       .del();
     return deleted
+
+    // const res = await db('users')
+    //     .where({ id: id })
+    //     .del()
+    // return res
+    //     // .del(); 
   }

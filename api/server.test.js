@@ -24,7 +24,7 @@ describe('server', () => {
             const res = await request(server).get('/users')
             expect(res.status).toBe(200)
         })
-        it('returns the right num of hobbits', async () => {
+        it('number of users', async () => {
             let res
             await db('users').insert(user1)
             res = await request(server).get('/users')
@@ -34,21 +34,23 @@ describe('server', () => {
             res = await request(server).get('/users')
             expect(res.body).toHaveLength(2)
         })
-        it('returns the right hobbits', async () => {
-            await db('hobbits').insert(frodo)
-            const res = await request(server).get('/hobbits')
+        it('returns added user', async () => {
+            await db('users').insert(user1)
+            const res = await request(server).get('/users')
             // expect(res.body[0]).toMatchObject(frodo)
-            expect(res.body[0]).toEqual({ id: 1, ...frodo })
+            expect(res.body[0]).toEqual({ id: 1, ...user1 })
         })
     })
-    describe('[POST] /hobbits', () => {
-        it('responds with the newly created hobbit', async () => {
+    describe('[DELETE] /users/:id', () => {
+        it('deletes user', async () => {
             let res
-            res = await request(server).post('/hobbits').send(frodo)
-            expect(res.body).toMatchObject({id: 1, ...frodo})
-
-            res = await request(server).post('/hobbits').send(sam)
-            expect(res.body).toMatchObject({id: 2, ...sam})
+            const [id] = await db('users').insert(user1)
+            await request(server).delete("/users/" + 1)
+            res = await db('users')
+            // console.log(res)
+            expect(res.length).toBe(0)
+            // console.log(res)
+            // expect(res.body).toMatchObject({id: 1, ...user1})
         })
     })
 })
